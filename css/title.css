@@ -899,3 +899,20 @@
   .data-confirm-buttons .menu-btn { flex: 1 1 auto; min-width: 0; font-size: 13px; }
 }
 
+
+/* 初期化の種類を選ぶダイアログの縦並びボタン + 免責文 */
+.reset-choice-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 4px 0 2px;
+}
+
+.reset-choice-buttons .menu-btn { width: 100%; }
+
+.reset-choice-note {
+  font-size: 11px;
+  line-height: 1.75;
+  color: rgba(205, 184, 145, .62);
+  margin-top: 2px;
+}

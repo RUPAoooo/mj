@@ -22,7 +22,7 @@ window.YM = window.YM || {};
     const el = $id('screen-' + name);
     if (el) el.classList.add('active');
     // 画面遷移のたびに確認ダイアログを閉じる(前の画面の開きっぱなしを防ぐ)。
-    ['data-confirm', 'start-confirm'].forEach(id => {
+    ['data-confirm', 'start-confirm', 'reset-choice'].forEach(id => {
       const d = document.getElementById(id);
       if (d) d.classList.add('hidden');
     });

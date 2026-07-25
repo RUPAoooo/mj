@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;700;800&family=Cinzel:wght@400;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/reset.css">
 <link rel="stylesheet" href="css/common.css">
-<link rel="stylesheet" href="css/title.css?v=20260724-confirmfix">
+<link rel="stylesheet" href="css/title.css?v=20260724-resetchoice">
 <link rel="stylesheet" href="css/game-start.css?v=20260723-layout-match">
 <link rel="stylesheet" href="css/table.css?v=20260723-shizi03">
 <link rel="stylesheet" href="css/tiles.css?v=20260722-stage1">
@@ -158,6 +158,7 @@
             <button id="set-reset-records" class="menu-btn data-btn danger-btn">記録のみ初期化</button>
           </div>
           <button id="set-reset" class="reset-all-link">すべてのデータを初期化</button>
+          <p class="data-note">セーブデータは、この端末のブラウザ内にのみ保存されます。外部サーバーには保存していません。ブラウザのデータ削除・シークレットモード・端末の変更・不具合などで消えた場合、復元や補償はできません。</p>
         </div>
       </div>
       <button class="menu-btn back-btn" data-back>もどる</button>
@@ -533,6 +534,23 @@
     </div>
   </div>
 
+  <!-- セーブデータ初期化の種類を選ぶダイアログ(準備画面などから開く) -->
+  <div id="reset-choice" class="data-confirm hidden" role="dialog" aria-modal="true" aria-labelledby="reset-choice-title">
+    <div class="data-confirm-panel">
+      <h3 id="reset-choice-title" class="data-confirm-title">セーブデータの初期化</h3>
+      <p class="data-confirm-text">初期化する範囲を選んでください。</p>
+      <div class="reset-choice-buttons">
+        <button id="reset-choice-settings" class="menu-btn data-btn">設定のみ初期化</button>
+        <button id="reset-choice-records" class="menu-btn data-btn danger-btn">記録のみ初期化</button>
+        <button id="reset-choice-all" class="menu-btn data-btn danger-btn">すべてのデータを初期化</button>
+      </div>
+      <p class="data-confirm-note reset-choice-note">セーブデータは、ゲームを開いているこの端末のブラウザ内にのみ保存されます。外部サーバーには保存していません。ブラウザのデータ削除・シークレットモード・端末の変更・不具合などで消えた場合、復元や補償はできません。大切な記録は、設定画面からバックアップを書き出して保管してください。</p>
+      <div class="data-confirm-buttons">
+        <button id="reset-choice-cancel" class="menu-btn">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 室内の空気感 -->
   <div id="crt-overlay"></div>
 </div>
@@ -556,7 +574,7 @@
 <script src="js/ui/dialogue.js?v=20260722-2"></script>
 <script src="js/ui/animation.js?v=20260722-stage1"></script>
 <script src="js/ui/character-ui.js?v=20260723-shizi02"></script>
-<script src="js/ui/render.js?v=20260724-fixreset"></script>
+<script src="js/ui/render.js?v=20260724-resetchoice"></script>
 <script src="js/ui/result-ui.js?v=20260724-album"></script>
 <script src="js/ui/album-ui.js?v=20260724-album"></script>
 <script src="js/ui/dev-panel.js?v=20260721-2"></script>
@@ -566,6 +584,6 @@
 <script src="js/game/call-manager.js"></script>
 <script src="js/game/album.js?v=20260724-album"></script>
 <script src="js/game/result-manager.js?v=20260724-album"></script>
-<script src="js/main.js?v=20260724-fixreset"></script>
+<script src="js/main.js?v=20260724-resetchoice"></script>
 </body>
 </html>

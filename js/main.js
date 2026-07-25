@@ -276,6 +276,17 @@ const DEBUG_MODE = false;
     if (box) box.classList.add('hidden');
   }
 
+  /* ===== セーブデータ初期化の種類を選ぶダイアログ ===== */
+  function openResetChoice() {
+    const box = $id('reset-choice');
+    if (box) box.classList.remove('hidden');
+  }
+
+  function closeResetChoice() {
+    const box = $id('reset-choice');
+    if (box) box.classList.add('hidden');
+  }
+
   /* 初期化後に画面を安全に作り直す */
   function refreshAfterDataChange() {
     if (YM.Round && YM.Round.resetTransientView) YM.Round.resetTransientView();
@@ -431,7 +442,7 @@ const DEBUG_MODE = false;
       applyAudioSettings();
       refreshSettingsUI();
     });
-    $id('prep-reset').addEventListener('click', resetSaveData);
+    $id('prep-reset').addEventListener('click', () => { AU().se('select'); openResetChoice(); });
   }
 
   /* ===== 設定画面 ===== */
@@ -485,6 +496,11 @@ const DEBUG_MODE = false;
     $id('set-reset').addEventListener('click', resetSaveData);
     $id('set-reset-settings').addEventListener('click', () => { AU().se('select'); askResetSettings(); });
     $id('set-reset-records').addEventListener('click', () => { AU().se('select'); askResetRecords(); });
+    // 初期化の種類を選ぶダイアログ(準備画面などから)
+    $id('reset-choice-settings').addEventListener('click', () => { AU().se('select'); closeResetChoice(); askResetSettings(); });
+    $id('reset-choice-records').addEventListener('click', () => { AU().se('select'); closeResetChoice(); askResetRecords(); });
+    $id('reset-choice-all').addEventListener('click', () => { AU().se('select'); closeResetChoice(); resetSaveData(); });
+    $id('reset-choice-cancel').addEventListener('click', () => { AU().se('select'); closeResetChoice(); });
     $id('set-export').addEventListener('click', () => { AU().se('select'); exportBackup(); });
     $id('set-import').addEventListener('click', () => { AU().se('select'); $id('set-import-file').click(); });
     $id('set-import-file').addEventListener('change', e => {
