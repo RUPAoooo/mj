@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;700;800&family=Cinzel:wght@400;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/reset.css">
 <link rel="stylesheet" href="css/common.css">
-<link rel="stylesheet" href="css/title.css?v=20260724-rtg">
+<link rel="stylesheet" href="css/title.css?v=20260724-confirmfix">
 <link rel="stylesheet" href="css/game-start.css?v=20260723-layout-match">
 <link rel="stylesheet" href="css/table.css?v=20260723-shizi03">
 <link rel="stylesheet" href="css/tiles.css?v=20260722-stage1">
@@ -36,18 +36,6 @@
       <button id="btn-settings" class="title-hotspot hs-settings" aria-label="設定"></button>
     </div>
 
-    <!-- 進行中の対局がある状態で GAME START を押したときの確認 -->
-    <div id="start-confirm" class="data-confirm hidden" role="dialog" aria-modal="true" aria-labelledby="start-confirm-title">
-      <div class="data-confirm-panel">
-        <h3 id="start-confirm-title" class="data-confirm-title">新しい対局を始めますか？</h3>
-        <p class="data-confirm-text">現在進行中の対局があります。新しい対局を始めると、現在の対局は終了します。</p>
-        <div class="data-confirm-buttons">
-          <button id="start-confirm-new" class="menu-btn danger-btn">新しい対局を始める</button>
-          <button id="start-confirm-return" class="menu-btn">対局にもどる</button>
-          <button id="start-confirm-cancel" class="menu-btn">キャンセル</button>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- ===== GAME START / 対局準備 ===== -->
@@ -173,21 +161,6 @@
         </div>
       </div>
       <button class="menu-btn back-btn" data-back>もどる</button>
-    </div>
-
-    <!-- 初期化・読み込みの確認ダイアログ -->
-    <div id="data-confirm" class="data-confirm hidden" role="dialog" aria-modal="true" aria-labelledby="data-confirm-title">
-      <div class="data-confirm-panel">
-        <h3 id="data-confirm-title" class="data-confirm-title"></h3>
-        <p id="data-confirm-text" class="data-confirm-text"></p>
-        <p id="data-confirm-warn" class="data-confirm-warn hidden"></p>
-        <p id="data-confirm-backup-note" class="data-confirm-note hidden">必要な場合は、初期化する前にバックアップを書き出してください。</p>
-        <button id="data-confirm-export" class="menu-btn data-btn hidden">バックアップを書き出す</button>
-        <div class="data-confirm-buttons">
-          <button id="data-confirm-yes" class="menu-btn danger-btn">削除する</button>
-          <button id="data-confirm-no" class="menu-btn">キャンセル</button>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -530,6 +503,35 @@
     <button data-dev="log">CPU思考ログ</button>
   </div>
   <pre id="dev-log" class="hidden"></pre>
+
+  <!-- ===== 確認ダイアログ(全画面共通のトップレベル・オーバーレイ) =====
+   * どの画面(タイトル/準備/設定)からでも前面に表示できるよう、
+   * #app 直下に置く。特定の画面(section)の中に入れない。 -->
+  <div id="data-confirm" class="data-confirm hidden" role="dialog" aria-modal="true" aria-labelledby="data-confirm-title">
+    <div class="data-confirm-panel">
+      <h3 id="data-confirm-title" class="data-confirm-title"></h3>
+      <p id="data-confirm-text" class="data-confirm-text"></p>
+      <p id="data-confirm-warn" class="data-confirm-warn hidden"></p>
+      <p id="data-confirm-backup-note" class="data-confirm-note hidden">必要な場合は、初期化する前にバックアップを書き出してください。</p>
+      <button id="data-confirm-export" class="menu-btn data-btn hidden">バックアップを書き出す</button>
+      <div class="data-confirm-buttons">
+        <button id="data-confirm-yes" class="menu-btn danger-btn">削除する</button>
+        <button id="data-confirm-no" class="menu-btn">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="start-confirm" class="data-confirm hidden" role="dialog" aria-modal="true" aria-labelledby="start-confirm-title">
+    <div class="data-confirm-panel">
+      <h3 id="start-confirm-title" class="data-confirm-title">新しい対局を始めますか？</h3>
+      <p class="data-confirm-text">現在進行中の対局があります。新しい対局を始めると、現在の対局は終了します。</p>
+      <div class="data-confirm-buttons">
+        <button id="start-confirm-new" class="menu-btn danger-btn">新しい対局を始める</button>
+        <button id="start-confirm-return" class="menu-btn">対局にもどる</button>
+        <button id="start-confirm-cancel" class="menu-btn">キャンセル</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 室内の空気感 -->
   <div id="crt-overlay"></div>
