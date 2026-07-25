@@ -1,0 +1,68 @@
+/* responsive.css - 画面サイズ対応(牌サイズ変数の切替のみ)
+ * 対局画面のレイアウト(右欄幅・カード寸法・河の位置・中央情報)は
+ * css/table-split.css の第8章で一元管理する。ここでは触れない。
+ * 牌の寸法はすべて css/tiles.css の :root 変数で管理し、
+ * ここでは解像度に応じて変数値を差し替える。
+ * 検証対象: 1280×720 / 1366×768 / 1440×900 / 1920×1080 で
+ *   ・プレイヤー手牌14枚が収まる
+ *   ・4人の河が重ならない
+ *   ・横向きリーチ牌でレイアウトが崩れない */
+
+/* 1366×768 前後(高さ800未満)= 標準ノートPC */
+@media (max-height: 800px) {
+  :root {
+    --player-tile-width: 55px;   /* 自分の手牌 約1.3倍 */
+    --player-tile-height: 75px;
+    --river-tile-width: 26px;
+    --river-tile-height: 36px;
+    --cpu-tile-width: 20px;
+    --cpu-tile-height: 28px;
+    --result-tile-width: 31px;
+    --result-tile-height: 43px;
+  }
+  .fx-banner { font-size: 60px; }
+  #player-hand-wrap { min-height: 78px; }
+  #btn-pon, #btn-chi, #btn-minkan, #btn-kan, #btn-riichi, #btn-tsumo, #btn-ron {
+    width: 112px;
+    height: 64px;
+  }
+}
+
+/* 1280×720 など、より低い高さ */
+@media (max-height: 730px) {
+  :root {
+    --player-tile-width: 49px;   /* 自分の手牌 約1.3倍 */
+    --player-tile-height: 68px;
+    --river-tile-width: 23px;
+    --river-tile-height: 32px;
+    --cpu-tile-width: 18px;
+    --cpu-tile-height: 25px;
+    --result-tile-width: 28px;
+    --result-tile-height: 39px;
+  }
+  .card-line { display: none; }
+  :root { --hand-gap: 2px; }   /* 小画面(タブレット等)は手牌間隔を詰める */
+  .start-greeting-panel h2 { margin-bottom: 12px; }
+  .start-greeting-portrait { height: 190px; }
+  .start-greeting-copy { min-height: 94px; padding: 8px 10px 10px; }
+  .start-greeting-copy p { font-size: 11px; }
+  #start-greeting-close { margin-top: 12px; }
+  .cutin-panel { min-height: 250px; }
+  .cutin-portrait { min-height: 250px; }
+  #btn-pon, #btn-chi, #btn-minkan, #btn-kan, #btn-riichi, #btn-tsumo, #btn-ron {
+    width: 101px;
+    height: 58px;
+  }
+}
+
+/* 大画面(1800px以上) */
+@media (min-width: 1800px) {
+  :root {
+    --player-tile-width: 65px;   /* 自分の手牌 約1.3倍 */
+    --player-tile-height: 88px;
+    --river-tile-width: 31px;
+    --river-tile-height: 43px;
+    --cpu-tile-width: 23px;
+    --cpu-tile-height: 32px;
+  }
+}

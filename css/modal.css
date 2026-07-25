@@ -1,0 +1,355 @@
+/* modal.css - 局結果・最終結果・ゲーム内メニュー */
+
+/* ===== 親決め(卓上サイコロ) ===== */
+#oyakime-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 25;              /* 卓の上・結果オーバーレイより下 */
+  pointer-events: none;     /* サイコロには触れない。ボタンだけ有効 */
+}
+#oyakime-msg {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 104px);
+  transform: translateX(-50%);
+  font-family: var(--ui-font);
+  font-size: 15px;
+  color: var(--gold-bright);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+#oyakime-roll {
+  position: absolute;
+  left: 50%;
+  bottom: 15%;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  min-width: 220px;
+}
+/* 卓上を移動する外枠。高さと回転は子要素で独立させる */
+.oya-die {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  opacity: 0;
+  perspective: 360px;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+.oya-die-shadow {
+  position: absolute; left: 4px; top: 38px; width: 40px; height: 15px;
+  border-radius: 50%; background: rgba(0, 0, 0, 0.58); filter: blur(5px);
+  transform-origin: center; will-change: transform, opacity;
+}
+.oya-die-lift {
+  position: absolute; inset: 0; transform: rotateX(12deg) rotateY(8deg);
+  transform-style: preserve-3d; will-change: transform;
+}
+.oya-die-cube {
+  position: absolute; left: 2px; top: 2px; width: 44px; height: 44px;
+  transform-style: preserve-3d; will-change: transform;
+}
+.oya-die-face {
+  position: absolute; inset: 0; box-sizing: border-box;
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+  padding: 6px; border: 1px solid #c9c0aa; border-radius: 7px;
+  background: linear-gradient(145deg, #fff 0%, #f5f1e7 62%, #ddd3bf 100%);
+  box-shadow: inset 0 1px 2px #fff, inset 0 -2px 3px rgba(90,70,35,.2);
+  backface-visibility: hidden;
+}
+.oya-die-face[data-side="front"] { transform: translateZ(22px); }
+.oya-die-face[data-side="back"] { transform: rotateY(180deg) translateZ(22px); }
+.oya-die-face[data-side="right"] { transform: rotateY(90deg) translateZ(22px); }
+.oya-die-face[data-side="left"] { transform: rotateY(-90deg) translateZ(22px); }
+.oya-die-face[data-side="top"] { transform: rotateX(90deg) translateZ(22px); }
+.oya-die-face[data-side="bottom"] { transform: rotateX(-90deg) translateZ(22px); }
+.oya-pip {
+  width: 7px; height: 7px; place-self: center; border-radius: 50%; background: #292724;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,.75), 0 1px 0 rgba(255,255,255,.65);
+}
+.oya-pip.red { background: #b22e35; }
+.oya-pip.p1 { grid-area: 1 / 1; } .oya-pip.p2 { grid-area: 1 / 3; }
+.oya-pip.p3 { grid-area: 2 / 1; } .oya-pip.p4 { grid-area: 2 / 2; }
+.oya-pip.p5 { grid-area: 2 / 3; } .oya-pip.p6 { grid-area: 3 / 1; }
+.oya-pip.p7 { grid-area: 3 / 3; }
+/* 仮親・本親に決まった席の情報カードを強調 */
+.info-card.oya-picked {
+  border-color: var(--gold-bright);
+  animation: oya-glow 0.5s ease-in-out 4;
+}
+@keyframes oya-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(214, 178, 106, 0.4); }
+  50% { box-shadow: 0 0 24px rgba(214, 178, 106, 0.95); }
+}
+
+.result-panel { min-width: 540px; max-width: 760px; }
+
+#result-banner, #final-title {
+  font-family: var(--serif-jp);
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  background: linear-gradient(175deg, #f2e3b8 10%, var(--champagne) 45%, #9c7a3e 70%, #e6cf96 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.9)) drop-shadow(0 0 22px rgba(214, 178, 106, 0.35));
+  text-align: center;
+}
+
+#result-hand {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0;
+}
+.result-meld-gap { width: 12px; }
+
+#result-yaku-list {
+  display: flex; flex-direction: column; gap: 4px;
+  min-width: 320px;
+  font-family: var(--serif-jp);
+  font-size: 15px;
+}
+.yaku-row {
+  display: flex; justify-content: space-between;
+  border-bottom: 1px solid rgba(176, 141, 74, 0.18);
+  padding: 3px 8px;
+  opacity: 0;
+  animation: yaku-in 0.3s forwards;
+}
+.yaku-row span:last-child { color: var(--gold-bright); font-variant-numeric: tabular-nums; }
+@keyframes yaku-in { from { transform: translateX(-16px); } to { opacity: 1; } }
+
+#result-score {
+  font-family: var(--serif-jp);
+  font-weight: 700;
+  font-size: 24px;
+  color: #d08a94;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.9), 0 0 18px rgba(160, 48, 64, 0.35);
+  letter-spacing: 0.1em;
+  margin-top: 6px;
+}
+#result-score .score-rank { color: var(--gold-bright); margin-right: 16px; }
+
+#result-deltas, #final-ranking {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 340px;
+  font-family: var(--ui-font);
+  font-size: 13px;
+}
+.delta-row {
+  display: grid;
+  grid-template-columns: 1fr 90px 80px;
+  gap: 10px;
+  padding: 3px 8px;
+  border-bottom: 1px solid rgba(176, 141, 74, 0.12);
+  color: #cfc5ae;
+}
+.delta-row span:nth-child(2) { text-align: right; font-variant-numeric: tabular-nums; }
+.delta-row span:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; color: var(--gold-bright); }
+.delta-row .plus { color: #8fc98f; }
+.delta-row .minus { color: #d08a94; }
+
+/* 最終結果 */
+.final-row {
+  display: grid;
+  grid-template-columns: 54px 1fr 110px 90px;
+  gap: 10px;
+  align-items: baseline;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(176, 141, 74, 0.18);
+  font-family: var(--serif-jp);
+  font-size: 16px;
+  color: var(--ivory);
+}
+.final-row.me {
+  background: rgba(230, 207, 150, 0.06);
+  border: 1px solid rgba(214, 178, 106, 0.4);
+  border-radius: 2px;
+}
+.final-rank {
+  font-family: var(--serif-jp);
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--gold-bright);
+}
+.final-row:first-child .final-rank { color: #f2e3b8; text-shadow: 0 0 12px rgba(214,178,106,0.6); }
+.final-score { text-align: right; font-variant-numeric: tabular-nums; }
+.final-pt { text-align: right; font-family: var(--latin); font-size: 13px; color: #b7ac97; }
+.final-buttons { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; justify-content: center; }
+
+/* =====================================================================
+ * 和了アルバム関連(カメラ保存ボタン / NEW RECORD バッジ / トースト)
+ * 既存の深い赤・黒・金の意匠に合わせる。
+ * ================================================================== */
+
+.result-panel { position: relative; }
+
+/* --- カメラ(保存)ボタン: 結果ウィンドウの右上 --- */
+.album-save-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 12px 6px;
+  background: linear-gradient(180deg, rgba(46, 30, 20, .82), rgba(18, 12, 9, .92));
+  border: 1px solid var(--brass-line);
+  border-radius: 3px;
+  color: var(--champagne);
+  font-family: var(--ui-font);
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .15s ease;
+}
+
+.album-save-btn:hover:not(:disabled),
+.album-save-btn:focus-visible:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--gold-bright);
+  box-shadow: 0 0 14px rgba(176, 141, 74, .3);
+  transform: translateY(-1px);
+}
+
+.album-save-btn:active:not(:disabled) { transform: translateY(0); }
+
+/* カメラアイコン(CSSのみで描画。外部アセット不要) */
+.album-btn-icon {
+  position: relative;
+  width: 22px;
+  height: 16px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+}
+
+.album-btn-icon::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 5px;
+  width: 8px;
+  height: 3px;
+  border: 1.5px solid currentColor;
+  border-bottom: 0;
+  border-radius: 2px 2px 0 0;
+}
+
+.album-btn-icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%);
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+}
+
+.album-btn-text {
+  font-size: 9px;
+  letter-spacing: .16em;
+  text-indent: .16em;
+  line-height: 1;
+}
+
+/* 保存済み: 暗くしてチェックマークに変える */
+.album-save-btn.is-saved {
+  opacity: .62;
+  cursor: default;
+  border-color: rgba(176, 141, 74, .28);
+  color: rgba(205, 184, 145, .8);
+}
+
+.album-save-btn.is-saved .album-btn-icon::after {
+  width: 9px;
+  height: 5px;
+  border: 0;
+  border-left: 1.6px solid currentColor;
+  border-bottom: 1.6px solid currentColor;
+  border-radius: 0;
+  transform: translate(-50%, -62%) rotate(-45deg);
+}
+
+/* --- NEW RECORD バッジ帯 --- */
+.result-records {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: -2px 0 2px;
+  padding: 7px 10px;
+  background: linear-gradient(90deg, transparent, rgba(110, 26, 38, .34) 20%, rgba(110, 26, 38, .34) 80%, transparent);
+  border-top: 1px solid rgba(176, 141, 74, .3);
+  border-bottom: 1px solid rgba(176, 141, 74, .3);
+  animation: record-in .5s ease both;
+}
+
+@keyframes record-in {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.record-label {
+  font-family: var(--latin);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-indent: .22em;
+  color: var(--gold-bright);
+  text-shadow: 0 0 10px rgba(230, 207, 150, .5);
+}
+
+.record-badge {
+  padding: 3px 10px;
+  font-family: var(--ui-font);
+  font-size: 12px;
+  letter-spacing: .04em;
+  color: #f0dcae;
+  background: rgba(20, 12, 9, .6);
+  border: 1px solid rgba(230, 207, 150, .55);
+  border-radius: 2px;
+}
+
+/* --- 保存結果のトースト --- */
+.result-toast {
+  margin-top: 2px;
+  padding: 7px 14px;
+  font-family: var(--ui-font);
+  font-size: 13px;
+  letter-spacing: .04em;
+  color: var(--champagne);
+  background: rgba(12, 8, 6, .92);
+  border: 1px solid var(--brass-line);
+  border-radius: 2px;
+  animation: record-in .3s ease both;
+}
+
+.result-toast.is-error {
+  color: #f0c2c2;
+  border-color: rgba(160, 48, 64, .7);
+}
+
+@media (max-width: 900px) {
+  .album-save-btn { top: 10px; right: 10px; padding: 6px 9px 5px; }
+  .result-records { gap: 5px; padding: 6px 8px; }
+  .record-badge { font-size: 11px; padding: 2px 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-records, .result-toast { animation: none; }
+  .album-save-btn { transition: none; }
+  .album-save-btn:hover:not(:disabled) { transform: none; }
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEV 牌カタログ - 宵待ち麻雀倶楽部 Ver.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/tiles.css">
+<style>
+  body { background: #14100c; color: #ece5d3; overflow: auto; padding: 24px; }
+  h1 { font-family: 'Shippori Mincho B1', serif; color: #e6cf96; font-size: 22px; margin-bottom: 4px; }
+  p.note { color: #b7ac97; font-size: 13px; margin-bottom: 20px; }
+  h2 { font-family: 'Shippori Mincho B1', serif; color: #d9c08a; font-size: 16px; margin: 22px 0 10px; border-bottom: 1px solid rgba(176,141,74,0.4); padding-bottom: 5px; }
+  .row { display: flex; flex-wrap: wrap; gap: 14px; }
+  /* カタログ用に牌を大きめの固定サイズで表示(外形の揃いを確認) */
+  .cell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .cell .tile { width: 64px; height: 88px; }
+  .cell .label { font-size: 11px; color: #9c8f78; font-family: sans-serif; }
+  /* 透明化の失敗を見つけるための市松背景 */
+  .checker .tile { background-image:
+    linear-gradient(45deg, #3a3226 25%, transparent 25%),
+    linear-gradient(-45deg, #3a3226 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #3a3226 75%),
+    linear-gradient(-45deg, transparent 75%, #3a3226 75%);
+    background-size: 12px 12px; background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+  }
+  .checker .tile.img-tile { background-color: transparent; }
+  .toggle { margin: 14px 0; }
+  .toggle button { font-family: sans-serif; font-size: 13px; color: #c4b998; background:#1a140f; border:1px solid #3a3226; padding:6px 14px; border-radius:3px; cursor:pointer; }
+</style>
+</head>
+<body>
+  <h1>牌カタログ (DEV)</h1>
+  <p class="note">数牌27種+字牌7種(z1-z7)は assets/tiles/faces/*.png、裏面はCSSです。外形の揃い・背景透明化・索子の緑・一索/八索/七筒/九筒・白牌の無地・画像とコードの対応を確認できます。</p>
+  <div class="toggle"><button id="btn-checker">市松背景 ON/OFF(透明化チェック)</button></div>
+
+  <h2>萬子 m1〜m9</h2>
+  <div class="row" id="row-man"></div>
+  <h2>索子 s1〜s9</h2>
+  <div class="row" id="row-sou"></div>
+  <h2>筒子 p1〜p9</h2>
+  <div class="row" id="row-pin"></div>
+  <h2>字牌 z1〜z7 (東南西北白發中)</h2>
+  <div class="row" id="row-honor"></div>
+  <h2>裏面 (CSS)</h2>
+  <div class="row" id="row-back"></div>
+
+<script src="js/constants.js"></script>
+<script src="js/mahjong/tiles.js"></script>
+<script>
+  function makeTile(kind, opts) {
+    opts = opts || {};
+    const el = document.createElement('div');
+    el.className = 'tile';
+    if (opts.back) { el.classList.add('back'); return el; }
+    const img = YM.Tiles.faceImg(kind);
+    if (img) {
+      el.classList.add('img-tile');
+      const im = document.createElement('img');
+      im.className = 'tile-img';
+      im.src = img; im.alt = YM.Tiles.nameOf(kind); im.draggable = false;
+      im.onerror = () => { el.classList.remove('img-tile'); el.innerHTML = YM.Tiles.faceSVG(kind); };
+      el.appendChild(im);
+    } else {
+      el.innerHTML = YM.Tiles.faceSVG(kind);
+    }
+    return el;
+  }
+  function cell(kind, code, opts) {
+    const c = document.createElement('div');
+    c.className = 'cell';
+    c.appendChild(makeTile(kind, opts));
+    const l = document.createElement('div');
+    l.className = 'label';
+    l.textContent = code;
+    c.appendChild(l);
+    return c;
+  }
+  const rows = {
+    'row-man': [0,1,2,3,4,5,6,7,8].map(k => [k, 'm'+(k+1)]),
+    'row-sou': [18,19,20,21,22,23,24,25,26].map(k => [k, 's'+(k-17)]),
+    'row-pin': [9,10,11,12,13,14,15,16,17].map(k => [k, 'p'+(k-8)]),
+    'row-honor': [27,28,29,30,31,32,33].map(k => [k, 'z'+(k-26)+' '+YM.Tiles.nameOf(k)])
+  };
+  for (const id in rows) {
+    const host = document.getElementById(id);
+    rows[id].forEach(([k, code]) => host.appendChild(cell(k, code)));
+  }
+  document.getElementById('row-back').appendChild(cell(0, '裏', { back: true }));
+
+  document.getElementById('btn-checker').addEventListener('click', () => {
+    document.querySelectorAll('.row').forEach(r => r.classList.toggle('checker'));
+  });
+</script>
+</body>
+</html>

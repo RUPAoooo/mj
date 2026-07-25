@@ -1,0 +1,387 @@
+/* tiles.css - 麻雀牌の造形と演出(高級ラウンジ牌)
+ * 正面:温かいアイボリー / 側面・裏面:竹を思わせる蜂蜜色 + 細い縦の竹目
+ * サイズはすべてCSS変数で管理し、responsive.css で解像度別に調整する。 */
+
+:root {
+  --player-tile-width: 60px;   /* 手前の自分の手牌のみ約1.3倍に拡大 */
+  --player-tile-height: 82px;
+  --river-tile-width: 29px;
+  --river-tile-height: 40px;
+  --cpu-tile-width: 22px;
+  --cpu-tile-height: 30px;
+  --result-tile-width: 34px;
+  --result-tile-height: 47px;
+
+  /* 素材色 */
+  --tile-face-1: #f8f1de;
+  --tile-face-2: #f0e7cd;
+  --tile-face-3: #e5d9ba;
+  --tile-side: #c59a4c;      /* 竹の側面(蜂蜜色) */
+  --tile-side-dark: #a87d38;
+  --tile-edge: #c8bd98;
+  --bamboo-1: #d8ab5a;       /* 竹裏:明るい蜂蜜 */
+  --bamboo-2: #c6934229;
+  --bamboo-3: #b8823a;       /* 竹裏:黄土 */
+}
+
+/* ===== 牌本体(正面・アイボリー) ===== */
+.tile {
+  width: var(--player-tile-width);
+  height: var(--player-tile-height);
+  border-radius: 5px;
+  background:
+    linear-gradient(158deg, var(--tile-face-1) 0%, var(--tile-face-2) 52%, var(--tile-face-3) 100%);
+  border: 1px solid var(--tile-edge);
+  border-bottom: 5px solid var(--tile-side);
+  box-shadow:
+    0 3px 5px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -2px 3px rgba(168, 125, 56, 0.35);
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+/* 面取り(角のわずかな光) */
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+.tile svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== 牌背(竹の裏面) ===== */
+.tile.back {
+  background:
+    /* 細い縦の竹目 */
+    repeating-linear-gradient(90deg,
+      rgba(120, 82, 28, 0.16) 0 0.5px,
+      rgba(120, 82, 28, 0) 0.5px 3px),
+    /* 微細な色むら */
+    radial-gradient(ellipse 60% 30% at 30% 20%, rgba(255, 235, 190, 0.35), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 75% 75%, rgba(150, 105, 45, 0.25), transparent 70%),
+    linear-gradient(172deg, var(--bamboo-1) 0%, #cc9a48 55%, var(--bamboo-3) 100%);
+  border: 1px solid var(--tile-side-dark);
+  /* 白い牌本体の側面が下端に見える */
+  border-bottom: 5px solid var(--tile-face-2);
+  box-shadow:
+    0 3px 5px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 240, 205, 0.5),
+    inset 0 -2px 3px rgba(120, 82, 28, 0.3);
+}
+.tile.back::before { box-shadow: inset 0 0 0 1px rgba(255, 235, 190, 0.22); }
+.tile.back svg { display: none; }
+
+/* ===== サイズ違い ===== */
+.tile.mini {
+  width: var(--river-tile-width);
+  height: var(--river-tile-height);
+  border-radius: 3.5px;
+  border-bottom-width: 4px;
+}
+.tile.cpu {
+  width: var(--cpu-tile-width);
+  height: var(--cpu-tile-height);
+  border-radius: 3px;
+  border-bottom-width: 3px;
+}
+.tile.small {
+  width: var(--result-tile-width);
+  height: var(--result-tile-height);
+  border-bottom-width: 4px;
+}
+
+/* 左右CPUの背面(横倒しの牌を縦に積む) */
+.tile.vback {
+  width: var(--cpu-tile-height);
+  height: calc(var(--cpu-tile-width) * 0.82);
+  border-radius: 3px;
+  border-bottom-width: 0;
+  border-right: 4px solid var(--tile-face-2);
+}
+
+/* ===== 数牌の画像牌 =====
+ * PNGにアイボリー面・図柄・竹色の下端まで含まれているため、
+ * CSSの面・枠・ハイライトは消してPNGをそのまま牌として表示する。 */
+.tile.img-tile {
+  background: none;
+  border: none;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+}
+.tile.img-tile::before { box-shadow: none; }
+.tile-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ===== プレイヤー手牌の操作 ===== */
+#player-hand .tile, #player-tsumo .tile {
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+#player-hand .tile:hover, #player-tsumo .tile:hover { filter: brightness(1.07); }
+.tile.selected {
+  transform: translateY(-11px);
+  filter: brightness(1.05);
+  box-shadow: 0 12px 14px rgba(0, 0, 0, 0.5);
+}
+.tile.riichi-ok { outline: 1px solid var(--crimson); outline-offset: 2px; }
+.tile.disabled { cursor: default; opacity: 0.5; filter: saturate(0.6); }
+.tile.drawn-in { animation: drawn-in 0.26s ease-out; }
+@keyframes drawn-in {
+  from { transform: translateX(38px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.tile.drawn-gap { margin-left: 8px; }
+
+/* ===== 河の牌: 席方向の回転 + リーチ牌の追加回転 =====
+ * 席回転(--seat-rot)はその牌を捨てた席から正位置に見える向き。
+ * リーチ牌は席の向きに対してさらに90度横向き(--riichi-rot)。
+ * 下 0 / 右 -90 / 上 180 / 左 90、リーチはそれぞれ +90。 */
+.river .tile {
+  --seat-rot: 0deg;
+  --riichi-rot: 0deg;
+  transform: rotate(calc(var(--seat-rot) + var(--riichi-rot)));
+}
+.river-right .tile { --seat-rot: -90deg; }
+.river-top   .tile { --seat-rot: 180deg; }
+.river-left  .tile { --seat-rot: 90deg; }
+.river .tile.riichi-decl { --riichi-rot: 90deg; }
+
+/* リーチ牌は回転で隣の升目へはみ出すため、向きに応じて余白を確保 */
+.river-bottom .tile.riichi-decl, .river-top .tile.riichi-decl {
+  margin: 0 calc((var(--river-tile-height) - var(--river-tile-width)) / 2);
+}
+.river-left .tile.riichi-decl, .river-right .tile.riichi-decl {
+  margin: calc((var(--river-tile-height) - var(--river-tile-width)) / 2) 0;
+}
+
+.river .tile.called-out { opacity: 0.22; }
+/* 最後の捨て牌: 席回転を打ち消さないよう outline / box-shadow のみで強調 */
+.river .tile.last-discard {
+  outline: 1.5px solid rgba(230, 207, 150, 0.9);
+  outline-offset: 1px;
+  animation: last-pulse 1.6s ease-in-out infinite;
+}
+@keyframes last-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(214, 178, 106, 0.35); }
+  50% { box-shadow: 0 0 12px rgba(214, 178, 106, 0.75); }
+}
+
+/* ===== 演出レイヤー ===== */
+#fx-layer {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  overflow: hidden;
+}
+#announcement-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 96;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fx-announcement {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.18) 0 24%, rgba(0,0,0,.78) 76%);
+  animation: announcement-scene 1.7s ease-out both;
+}
+.fx-announcement::before,
+.fx-announcement::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: -12%;
+  right: -12%;
+  top: 50%;
+  height: clamp(120px, 28vh, 230px);
+  transform: translateY(-50%) skewY(-3deg) scaleX(0);
+  background: linear-gradient(90deg, transparent, rgba(91,10,22,.86) 16%, rgba(18,4,7,.94) 50%, rgba(91,10,22,.86) 84%, transparent);
+  animation: announcement-slash 1.7s cubic-bezier(.16,1,.3,1) both;
+}
+.fx-announcement::after {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #f4dfaa 23%, #fff4d0 50%, #f4dfaa 77%, transparent);
+  box-shadow: 0 0 22px rgba(244,223,170,.9);
+  transform: translateY(-50%) scaleX(0);
+}
+.fx-announcement-lines {
+  position: absolute;
+  inset: -25%;
+  z-index: -1;
+  opacity: .42;
+  background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,232,179,.28) 0deg .45deg, transparent .5deg 6deg);
+  animation: announcement-lines 1.7s ease-out both;
+}
+.fx-announcement-frame {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 50%;
+  width: min(82%, 1180px);
+  aspect-ratio: 1983 / 793;
+  transform: translate(-50%, -50%) scale(.88);
+  background: url('../assets/ui/event/event_frame.png') center / 100% 100% no-repeat;
+  /* 支給画像はRGBで外周が白いため、輝度を反転したCSSマスクで白だけを抜く。 */
+  -webkit-mask-image: linear-gradient(#fff 0 0), url('../assets/ui/event/event_frame.png');
+  -webkit-mask-position: center, center;
+  -webkit-mask-size: 100% 100%, 100% 100%;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-composite: xor;
+  mask-image: linear-gradient(#fff 0 0), url('../assets/ui/event/event_frame.png');
+  mask-position: center, center;
+  mask-size: 100% 100%, 100% 100%;
+  mask-repeat: no-repeat, no-repeat;
+  mask-mode: alpha, luminance;
+  mask-composite: exclude;
+  filter: saturate(1.22) contrast(1.05) drop-shadow(0 0 22px rgba(90,255,105,.58));
+  opacity: 0;
+  animation: announcement-frame 1.7s cubic-bezier(.16,1,.3,1) both;
+}
+.fx-announcement-word {
+  position: relative;
+  z-index: 2;
+  color: #fff7d7;
+  font: 900 clamp(110px, 20vw, 245px)/.8 var(--serif-jp);
+  letter-spacing: .08em;
+  text-indent: .08em;
+  white-space: nowrap;
+  -webkit-text-stroke: clamp(1px, .25vw, 4px) #6d0918;
+  paint-order: stroke fill;
+  text-shadow:
+    0 .045em 0 #9b1228,
+    0 .085em 0 #3b040c,
+    0 .12em .08em rgba(0,0,0,.9),
+    0 0 .22em rgba(240,74,99,.75),
+    0 0 .55em rgba(255,220,151,.45);
+  transform-origin: center;
+  animation: announcement-word 1.7s cubic-bezier(.12,.9,.18,1) both;
+}
+.fx-announcement-actor {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + clamp(78px, 13vw, 150px));
+  transform: translateX(-50%);
+  color: #f5dfad;
+  font: 700 clamp(12px, 1.7vw, 20px)/1 var(--ui-font);
+  letter-spacing: .22em;
+  text-indent: .22em;
+  text-shadow: 0 2px 7px #000;
+  z-index: 2;
+  animation: announcement-actor 1.7s ease both;
+}
+.fx-announcement-tsumo::before { background: linear-gradient(90deg, transparent, rgba(13,58,72,.88) 16%, rgba(4,18,24,.95) 50%, rgba(13,58,72,.88) 84%, transparent); }
+.fx-announcement-tsumo .fx-announcement-word {
+  -webkit-text-stroke-color: #12526a;
+  text-shadow: 0 .045em 0 #167694, 0 .085em 0 #062f3e, 0 .12em .08em rgba(0,0,0,.9), 0 0 .25em rgba(86,210,240,.8), 0 0 .55em rgba(255,235,175,.45);
+}
+.fx-announcement-riichi .fx-announcement-word { font-size: clamp(96px, 17vw, 215px); }
+@keyframes announcement-scene {
+  0% { opacity: 0; }
+  9%, 78% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes announcement-slash {
+  0% { transform: translateY(-50%) skewY(-3deg) scaleX(0); }
+  16%, 82% { transform: translateY(-50%) skewY(-3deg) scaleX(1); }
+  100% { transform: translateY(-50%) skewY(-3deg) scaleX(.92); opacity: 0; }
+}
+@keyframes announcement-lines {
+  0% { transform: scale(.35) rotate(-5deg); opacity: 0; }
+  18%, 75% { transform: scale(1) rotate(0); opacity: .42; }
+  100% { transform: scale(1.12) rotate(1deg); opacity: 0; }
+}
+@keyframes announcement-frame {
+  0%, 7% { opacity: 0; transform: translate(-50%, -50%) scale(.82); }
+  18%, 76% { opacity: .96; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.04); }
+}
+@keyframes announcement-word {
+  0% { opacity: 0; transform: scale(2.4) rotate(-5deg); filter: blur(10px); }
+  15% { opacity: 1; transform: scale(.92) rotate(1deg); filter: blur(0); }
+  23%, 76% { opacity: 1; transform: scale(1) rotate(0); }
+  100% { opacity: 0; transform: scale(1.12); filter: blur(1px); }
+}
+@keyframes announcement-actor {
+  0%, 15% { opacity: 0; transform: translate(-50%, 10px); }
+  28%, 76% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; }
+}
+.fx-banner {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 76px;
+  font-family: var(--serif-jp);
+  font-weight: 800;
+  background: linear-gradient(175deg, #f2e3b8 10%, var(--champagne) 45%, #9c7a3e 70%, #e6cf96 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.9)) drop-shadow(0 0 34px rgba(214, 178, 106, 0.45));
+  animation: banner-pop 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  white-space: nowrap;
+}
+.fx-banner.red {
+  background: linear-gradient(175deg, #e8aeb6 10%, #c05a68 45%, #7a2431 70%, #d08a94 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.9)) drop-shadow(0 0 34px rgba(160, 48, 64, 0.55));
+}
+@keyframes banner-pop {
+  0% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+  22% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  82% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.fx-flash {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(232, 200, 130, 0.3), transparent 100%);
+  animation: fx-flash 0.6s forwards;
+}
+@keyframes fx-flash { to { opacity: 0; } }
+.fx-red-sweep {
+  position: absolute; top: 0; bottom: 0; width: 34%;
+  background:
+    linear-gradient(90deg, transparent 46%, rgba(214, 178, 106, 0.7) 49.6%, rgba(240, 223, 192, 0.9) 50%, rgba(214, 178, 106, 0.7) 50.4%, transparent 54%),
+    linear-gradient(90deg, transparent, rgba(110, 26, 38, 0.4) 50%, transparent);
+  animation: red-sweep 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes red-sweep {
+  from { left: -34%; }
+  to { left: 100%; }
+}
+.fx-darken {
+  position: absolute; inset: 0;
+  background: rgba(2, 1, 1, 0.72);
+  animation: fx-darken-in 0.35s forwards;
+}
+@keyframes fx-darken-in { from { opacity: 0; } }
+.fx-yakuman {
+  position: absolute; inset: -20%;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 50%,
+      rgba(214, 178, 106, 0.10) 0deg 8deg, transparent 8deg 26deg);
+  animation: yakuman-spin 14s linear infinite;
+}
+@keyframes yakuman-spin { to { transform: rotate(40deg) scale(1.15); } }

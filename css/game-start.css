@@ -1,0 +1,397 @@
+/* GAME START準備画面: 完成画像を土台に実動作UIを重ねる */
+
+#screen-character-select {
+  overflow: hidden;
+  background: #050302;
+}
+
+.prep-stage {
+  position: relative;
+  width: min(100vw, calc(100vh * 1672 / 941));
+  height: min(100vh, calc(100vw * 941 / 1672));
+  aspect-ratio: 1672 / 941;
+  isolation: isolate;
+}
+
+.prep-base-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: fill;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.prep-name-field {
+  position: absolute;
+  left: 3.35%;
+  top: 33.45%;
+  width: 23.2%;
+  height: 5.35%;
+}
+
+#player-name {
+  width: 100%;
+  height: 100%;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0 13% 0 7%;
+  background: rgba(2, 2, 1, 0.2);
+  color: #fff0cd;
+  font-family: var(--serif-jp);
+  font-size: clamp(12px, 1.18vw, 22px);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  user-select: text;
+  caret-color: #ffd38a;
+  outline: none;
+  text-shadow: 0 0 8px rgba(255, 74, 47, 0.5), 0 1px 2px #000;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+#player-name:hover {
+  background: rgba(255, 62, 38, 0.07);
+}
+
+#player-name:focus-visible {
+  background: rgba(32, 5, 3, 0.42);
+  border-color: rgba(255, 210, 130, 0.96);
+  box-shadow: inset 0 0 16px rgba(255, 67, 43, 0.18), 0 0 12px rgba(255, 67, 43, 0.45);
+}
+
+.prep-error {
+  position: absolute;
+  left: 3.6%;
+  top: 38.9%;
+  width: 22.7%;
+  min-height: 2.1%;
+  color: #ffb0a4;
+  font-family: var(--ui-font);
+  font-size: clamp(8px, .68vw, 12px);
+  line-height: 1.2;
+  text-shadow: 0 1px 3px #000, 0 0 7px rgba(255, 38, 24, .8);
+}
+
+.prep-avatar,
+.prep-opponent,
+.prep-option,
+.prep-hotspot {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease, transform .07s ease, filter .15s ease;
+}
+
+.prep-avatar {
+  width: 7.45%;
+  height: 17.15%;
+  border-radius: 9px;
+}
+.avatar-1 { left: 3.35%; top: 42.95%; }
+.avatar-2 { left: 11.3%; top: 42.95%; }
+.avatar-3 { left: 19.05%; top: 42.95%; }
+.avatar-4 { left: 3.35%; top: 61.05%; }
+.avatar-5 { left: 11.3%; top: 61.05%; }
+.avatar-6 { left: 19.05%; top: 61.05%; }
+
+.prep-avatar:hover,
+.prep-avatar:focus-visible {
+  background: rgba(255, 72, 48, 0.08);
+  border-color: rgba(255, 218, 143, 0.92);
+  box-shadow: inset 0 0 17px rgba(255, 232, 176, 0.18), 0 0 10px rgba(255, 74, 48, 0.72);
+}
+
+.prep-avatar.selected {
+  border: 2px solid #ffd17b;
+  background: rgba(255, 64, 40, 0.13);
+  box-shadow: inset 0 0 22px rgba(255, 58, 38, .26), 0 0 7px #ffe0a0, 0 0 20px rgba(255, 46, 28, .88);
+}
+
+.prep-avatar.selected::after {
+  content: "✓";
+  position: absolute;
+  right: 3%;
+  top: 2%;
+  width: 22%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #8d170d;
+  border: 1px solid #ffd58b;
+  color: #fff1ce;
+  font: 700 clamp(8px, .8vw, 14px) var(--ui-font);
+  box-shadow: 0 0 9px #ff3a25;
+}
+
+.prep-opponent {
+  left: var(--opponent-left);
+  top: 32.20%;
+  width: var(--opponent-width);
+  height: 41.98%;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+.opponent-ayano { --opponent-left: 29.366%; --opponent-width: 7.237%; }
+.opponent-lili { --opponent-left: 36.902%; --opponent-width: 7.177%; }
+.opponent-masked { --opponent-left: 44.318%; --opponent-width: 7.117%; }
+.opponent-tanabe { --opponent-left: 51.734%; --opponent-width: 7.357%; }
+.opponent-tome { --opponent-left: 59.390%; --opponent-width: 7.416%; }
+.opponent-chiipon { --opponent-left: 67.105%; --opponent-width: 7.476%; }
+
+.prep-opponent:hover,
+.prep-opponent:focus-visible {
+  background: rgba(255, 56, 37, 0.07);
+  border-color: rgba(255, 214, 128, 0.9);
+  box-shadow: inset 0 0 24px rgba(255, 213, 137, .12), 0 0 11px rgba(255, 62, 40, .7);
+}
+
+.prep-opponent.selected {
+  border: 2px solid #ff9170;
+  background: rgba(255, 50, 30, .08);
+  box-shadow: inset 0 0 28px rgba(255, 54, 34, .18), 0 0 8px #ffbc7a, 0 0 22px rgba(255, 46, 28, .8);
+}
+
+.prep-opponent.selected::before {
+  content: "✓";
+  position: absolute;
+  left: -2%;
+  top: -2.8%;
+  width: 22%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid #ffd98e;
+  background: #9b170e;
+  color: #fff0c9;
+  font: 700 clamp(9px, .9vw, 16px) var(--ui-font);
+  box-shadow: 0 0 10px rgba(255, 47, 26, .95);
+}
+
+.prep-selection-count {
+  position: absolute;
+  left: 61.75%;
+  top: 26.1%;
+  width: 4.25%;
+  height: 4.25%;
+  display: grid;
+  place-items: center;
+  background: rgba(7, 5, 3, .94);
+  color: #f4c85f;
+  font: 600 clamp(11px, 1.15vw, 21px) var(--latin);
+  letter-spacing: .05em;
+  text-shadow: 0 0 8px rgba(255, 110, 45, .5);
+}
+
+.prep-random { left: 66.15%; top: 26.3%; width: 7.05%; height: 4.55%; border-radius: 7px; }
+
+.prep-setting-group {
+  position: absolute;
+}
+.prep-bgm { left: 84.05%; top: 33.1%; width: 12.0%; height: 4.8%; }
+.prep-se { left: 84.05%; top: 42.25%; width: 12.0%; height: 4.8%; }
+.prep-setting-group .prep-option { top: 0; height: 100%; border-radius: 5px; background: transparent; }
+.prep-setting-group .prep-option:first-child { left: 0; width: 50%; }
+.prep-setting-group .prep-option:last-child { right: 0; width: 50%; }
+
+.prep-option:hover,
+.prep-option:focus-visible {
+  background: rgba(255, 64, 40, .08);
+  border-color: rgba(255, 206, 118, .8);
+  box-shadow: 0 0 10px rgba(255, 63, 39, .48);
+}
+.prep-option.selected {
+  background: rgba(107, 15, 9, .42);
+  border-color: #ffd089;
+  box-shadow: inset 0 0 14px rgba(255, 85, 55, .32), 0 0 8px #ffae69, 0 0 18px rgba(255, 40, 25, .62);
+}
+
+.prep-volume-wrap {
+  position: absolute;
+  left: 80.8%;
+  top: 53.65%;
+  width: 11.65%;
+  height: 5.55%;
+  display: flex;
+  align-items: center;
+  padding: 0 1%;
+  background: transparent;
+}
+
+#prep-volume {
+  width: 100%;
+  height: 28%;
+  accent-color: #ff5a39;
+  cursor: pointer;
+  user-select: auto;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+#prep-volume:focus-visible { outline: 2px solid #ffd184; outline-offset: 3px; }
+
+.prep-volume-value {
+  position: absolute;
+  left: 92.9%;
+  top: 53.65%;
+  width: 3.2%;
+  height: 5.55%;
+  display: grid;
+  place-items: center;
+  background: rgba(6, 4, 2, .96);
+  color: #f3c66a;
+  font: 600 clamp(9px, .95vw, 17px) var(--serif-jp);
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+
+.prep-stage.volume-touched .prep-volume-wrap { background: rgba(6, 4, 2, .96); }
+.prep-stage.volume-touched #prep-volume,
+.prep-stage.volume-touched .prep-volume-value { opacity: 1; }
+
+.prep-reset { left: 77.65%; top: 63.4%; width: 18.4%; height: 7.2%; border-radius: 9px; }
+.prep-back { left: 12.35%; top: 82.8%; width: 14.4%; height: 9.7%; border-radius: 9px; }
+.prep-confirm { left: 29.05%; top: 82.15%; width: 42.05%; height: 13.25%; border-radius: 18px; }
+.prep-howto { left: 73.0%; top: 82.8%; width: 14.25%; height: 9.7%; border-radius: 9px; }
+
+.prep-hotspot:hover:not(:disabled),
+.prep-hotspot:focus-visible:not(:disabled) {
+  background: rgba(255, 64, 40, .09);
+  border-color: rgba(255, 220, 146, .9);
+  box-shadow: inset 0 0 22px rgba(255, 223, 159, .18), 0 0 10px rgba(255, 95, 58, .8), 0 0 26px rgba(255, 43, 27, .45);
+  backdrop-filter: brightness(1.2) saturate(1.18);
+}
+
+.prep-hotspot:active:not(:disabled),
+.prep-avatar:active,
+.prep-opponent:active,
+.prep-option:active {
+  transform: translateY(1px) scale(.992);
+  filter: brightness(.92);
+  box-shadow: inset 0 5px 13px rgba(0, 0, 0, .5), 0 0 13px rgba(255, 65, 40, .72);
+}
+
+.prep-hotspot:focus-visible,
+.prep-avatar:focus-visible,
+.prep-opponent:focus-visible,
+.prep-option:focus-visible {
+  outline: 2px solid #ffd790;
+  outline-offset: 2px;
+}
+
+.prep-confirm:disabled {
+  cursor: not-allowed;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.prep-confirm.ready {
+  box-shadow: inset 0 0 15px rgba(255, 212, 140, .12), 0 0 15px rgba(255, 48, 30, .28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prep-avatar,
+  .prep-opponent,
+  .prep-option,
+  .prep-hotspot,
+  #player-name { transition: none; }
+  .prep-hotspot:active:not(:disabled),
+  .prep-avatar:active,
+  .prep-opponent:active,
+  .prep-option:active { transform: none; }
+}
+
+/* 2026-07-23: six original avatars plus five additional choices. */
+.prep-avatar-grid {
+  position: absolute;
+  left: 2.75%;
+  top: 42.55%;
+  z-index: 3;
+  width: 24.15%;
+  height: 36.2%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 3.2%;
+  padding: .45%;
+  box-sizing: border-box;
+  border: 1px solid rgba(208, 145, 66, .42);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(111, 29, 20, .34), transparent 68%),
+    rgba(12, 7, 6, .96);
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, .72);
+}
+
+.prep-avatar-grid .prep-avatar {
+  position: relative;
+  inset: auto;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  /* 枠は 3:4 前後にして、元画像(1188x1324 ≒ 0.897)から大きく外れないようにする。
+   * 縦横比が近いほど object-fit: cover の切り落としが減り、輪郭が素直に出る。 */
+  aspect-ratio: 1188 / 1324;
+  justify-self: center;
+  align-self: center;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  border-radius: 7px;
+  background: #120c09;
+  /* 親側で拡大縮小すると子のimgが二重スケーリングになるため、変形は持たせない。 */
+  transform: none;
+}
+
+.prep-avatar-grid .prep-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 顔と頭が切れないよう、上寄りを基準に収める。 */
+  object-position: center 18%;
+  /* ブラウザ標準の滑らかな補間で縮小させる(pixelated/crisp-edges を明示的に解除)。 */
+  image-rendering: auto;
+  /* transform を持たせると合成レイヤ上で再スケールされ、輪郭が荒れる。 */
+  transform: none;
+  backface-visibility: visible;
+  pointer-events: none;
+}
+
+.prep-avatar-grid .prep-avatar:hover img,
+.prep-avatar-grid .prep-avatar:focus-visible img {
+  filter: brightness(1.08);
+  transform: none;
+}
+
+/* 押下時のスケールは枠側だけに留め、画像には伝えない。 */
+.prep-avatar-grid .prep-avatar:active {
+  transform: translateY(1px);
+}
+
+.prep-avatar-grid .prep-avatar:active img {
+  transform: none;
+}

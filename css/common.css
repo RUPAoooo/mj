@@ -1,0 +1,282 @@
+/* common.css - 変数・全体・共通ボタン・オーバーレイ・DEV(4人麻雀版) */
+
+:root {
+  --bg: #0a0806;
+  --charcoal: #14100c;
+  --wood: #241a12;
+  --wood-dark: #170f0a;
+  --felt-green: #10382a;
+  --felt-green-dark: #0a241b;
+  --gold: #b08d4a;
+  --gold-bright: #e6cf96;
+  --champagne: #d9c08a;
+  --brass-line: rgba(176, 141, 74, 0.45);
+  --deep-red: #6e1a26;
+  --crimson: #a03040;
+  --wine: #4a141d;
+  --navy: #16182e;
+  --panel-black: rgba(16, 12, 9, 0.92);
+  --ivory: #ece5d3;
+  --serif-jp: 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --latin: 'Cinzel', 'Shippori Mincho B1', serif;
+  --ui-font: 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ivory);
+  font-family: var(--serif-jp);
+  overflow: hidden;
+  user-select: none;
+}
+
+#app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(214, 168, 96, 0.10), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 12% 100%, rgba(110, 26, 38, 0.12), transparent 70%),
+    linear-gradient(180deg, #0c0a08 0%, #0a0806 60%, #080604 100%);
+}
+
+/* ===== 画面切替 ===== */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.screen.active { display: flex; }
+.hidden { display: none !important; }
+
+/* ===== 室内の空気感 ===== */
+#crt-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 900;
+  background: radial-gradient(ellipse 90% 80% at 50% 40%, transparent 55%, rgba(4, 3, 2, 0.5) 100%);
+  box-shadow: inset 0 0 180px rgba(0, 0, 0, 0.55);
+}
+
+/* ===== 共通ボタン ===== */
+.menu-btn {
+  font-family: var(--latin);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  color: var(--champagne);
+  background: linear-gradient(180deg, rgba(42, 32, 22, 0.85), rgba(20, 14, 9, 0.9));
+  border: 1px solid var(--brass-line);
+  border-radius: 2px;
+  padding: clamp(8px, 1.5vh, 12px) 30px;
+  box-shadow: inset 0 1px 0 rgba(230, 207, 150, 0.12), 0 4px 14px rgba(0, 0, 0, 0.5);
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.08s;
+  text-align: center;
+  cursor: pointer;
+}
+.menu-btn:hover:not(:disabled) {
+  background: linear-gradient(180deg, rgba(58, 44, 28, 0.9), rgba(30, 21, 13, 0.95));
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+.menu-btn:active:not(:disabled) { transform: translateY(1px); }
+.menu-btn:disabled { opacity: 0.3; cursor: default; }
+
+.pixel-label {
+  font-family: var(--ui-font);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--champagne);
+  letter-spacing: 0.18em;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+
+.gold-plate {
+  font-family: var(--serif-jp);
+  font-weight: 700;
+  background: linear-gradient(180deg, #3c2f1a 0%, #241b0e 55%, #2e2312 100%);
+  border: 1px solid var(--gold);
+  box-shadow: inset 0 1px 0 rgba(230, 207, 150, 0.25), 0 2px 6px rgba(0,0,0,0.5);
+  color: var(--gold-bright);
+  padding: 3px 14px;
+  border-radius: 2px;
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+}
+
+/* ===== オーバーレイ共通 ===== */
+.overlay {
+  position: absolute; inset: 0; z-index: 40;
+  background: rgba(4, 3, 2, 0.78);
+  backdrop-filter: blur(2px);
+  display: flex; align-items: center; justify-content: center;
+}
+.overlay-panel {
+  background: linear-gradient(180deg, rgba(24, 18, 12, 0.97), rgba(14, 10, 7, 0.98));
+  border: 1px solid var(--brass-line);
+  border-radius: 3px;
+  padding: 28px 38px;
+  display: flex; flex-direction: column; gap: 12px;
+  align-items: center;
+  min-width: 340px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: inset 0 1px 0 rgba(230,207,150,0.08), 0 30px 80px rgba(0,0,0,0.8);
+}
+.overlay-panel h3 {
+  font-family: var(--latin);
+  color: var(--champagne);
+  letter-spacing: 0.35em;
+  text-indent: 0.35em;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* ===== DEVパネル ===== */
+#dev-toggle {
+  position: fixed; right: 8px; bottom: 8px; z-index: 950;
+  font-family: var(--ui-font);
+  font-size: 10px; color: #443c30;
+  border: 1px solid #241f18;
+  padding: 2px 8px; border-radius: 2px;
+  background: rgba(10, 8, 6, 0.6);
+  cursor: pointer;
+}
+#dev-toggle:hover { color: #8a7d66; }
+#dev-panel {
+  position: fixed; right: 8px; bottom: 34px; z-index: 950;
+  background: rgba(12, 9, 7, 0.96);
+  border: 1px solid #3a3226;
+  border-radius: 3px;
+  padding: 10px;
+  display: flex; flex-direction: column; gap: 4px;
+  width: 220px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+#dev-panel h4 { color: var(--crimson); font-family: var(--latin); font-size: 12px; letter-spacing: 0.2em; }
+#dev-panel button {
+  font-family: var(--ui-font);
+  font-size: 12px; color: #c4b998;
+  background: #1a140f; border: 1px solid #3a3226;
+  padding: 4px 8px; border-radius: 2px; text-align: left;
+  cursor: pointer;
+}
+#dev-panel button:hover { border-color: var(--gold); color: var(--gold-bright); }
+#dev-log {
+  position: fixed; left: 8px; bottom: 8px; z-index: 950;
+  width: 380px; max-height: 40vh;
+  overflow-y: auto;
+  background: rgba(8, 6, 4, 0.92);
+  border: 1px solid #3a3226;
+  font-family: var(--ui-font);
+  font-size: 11px;
+  line-height: 1.6;
+  color: #b7ac97;
+  padding: 8px;
+  white-space: pre-wrap;
+}
+
+/* スマホブロック */
+#mobile-block {
+  position: fixed; inset: 0; z-index: 999;
+  background: #0c0a08;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 30px;
+  font-size: 17px;
+  line-height: 2.2;
+  color: var(--ivory);
+}
+
+/* =====================================================================
+ * 2026-07-24 追加分
+ * ================================================================== */
+
+/* --- (5) タブレット実機対策: ブラウザのツールバーを除いた
+ * 「見えている高さ」(dvh) を基準にする。100vh はツールバー格納時の
+ * 高さを指すため、下端のボタンが切れていた。 --- */
+@supports (height: 100dvh) {
+  body { height: 100dvh; }
+  #app { height: 100dvh; }
+  #game-frame {
+    width: min(100vw, calc(100dvh * 16 / 9), 1600px);
+    height: min(100dvh, calc(100vw * 9 / 16), 900px);
+  }
+  :root {
+    --frame-w: min(100vw, calc(100dvh * 16 / 9), 1600px);
+    --frame-h: min(100dvh, calc(100vw * 9 / 16), 900px);
+  }
+}
+
+/* --- (4) 縦向き端末への案内オーバーレイ --- */
+#rotate-guide {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(5, 4, 3, .96);
+  color: #f2d7a0;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+#rotate-guide .rotate-guide-panel {
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: center;
+}
+
+#rotate-guide .rotate-guide-icon {
+  width: 84px;
+  height: 84px;
+  border: 3px solid #d9a04e;
+  border-radius: 12px;
+  position: relative;
+  animation: ym-rotate-hint 2.2s ease-in-out infinite;
+}
+
+#rotate-guide .rotate-guide-icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 7px;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 4px;
+  border-radius: 2px;
+  background: #d9a04e;
+}
+
+@keyframes ym-rotate-hint {
+  0%, 18%   { transform: rotate(0deg); }
+  55%, 82%  { transform: rotate(90deg); }
+  100%      { transform: rotate(90deg); }
+}
+
+#rotate-guide h2 {
+  font: 700 20px/1.5 var(--serif-jp, serif);
+  letter-spacing: .08em;
+}
+
+#rotate-guide p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #d9c3a3;
+}
+
+@media (orientation: portrait) {
+  #rotate-guide { display: flex; }
+}
