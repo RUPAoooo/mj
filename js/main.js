@@ -537,6 +537,12 @@ const DEBUG_MODE = false;
     document.querySelectorAll('[data-back]').forEach(btn => {
       btn.addEventListener('click', () => {
         AU().se('select');
+        // 確認ダイアログが開いていたら閉じるだけにする(誤って画面遷移しない)
+        const dc = $id('data-confirm');
+        if (dc && !dc.classList.contains('hidden')) {
+          closeDataConfirm();
+          return;
+        }
         const returnToGame = settingsReturn === 'game' || settingsReturn === 'game-direct';
         UI().showScreen(returnToGame ? 'game' : settingsReturn === 'character-select' ? 'character-select' : 'title');
         if (settingsReturn === 'game') $id('game-menu').classList.remove('hidden');
